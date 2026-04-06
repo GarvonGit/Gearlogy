@@ -5,88 +5,127 @@ import { useFilterContext } from "../context/filter_context";
 
 const Sort = () => {
   const { filter_products, grid_view, setGridView, setListView, sorting } = useFilterContext();
+
   return (
-    <Wrapper className="sort-section">
-      {/* 1st column  LIST AND GRID VIEW */}
-      <div className="sorting-list--grid">      {/*Providing two buttons for list view and grid view*/}
-        <button
-          className={grid_view ? "active sort-btn" : "sort-btn"}
-          onClick={setGridView}>                          {/*if grid view is true then show gird view and set it as active*/}
-          <BsFillGridFill className="icon" />     {/*Setting grid view icon*/}
-        </button>
-
-        <button                                        
-          className={!grid_view ? "active sort-btn" : " sort-btn"}        
-          onClick={setListView}>                  {/*Setting List view icon*/}
-          <BsList className="icon" />             {/*if grid view is false then show list view and set it as active*/}
-        </button>
+    <Wrapper>
+      <div className="results-count">
+        <span className="count">{filter_products.length}</span>
+        <span className="label">results</span>
       </div>
 
-      {/* 2nd column - Shows how many products are present  */}
-      <div className="product-data">
-        <p>{`${filter_products.length} Product Available`}</p>
-      </div>
+      <div className="sort-controls">
+        <div className="view-toggle">
+          <button
+            className={grid_view ? "view-btn active" : "view-btn"}
+            onClick={setGridView}
+            title="Grid view"
+          >
+            <BsFillGridFill />
+          </button>
+          <button
+            className={!grid_view ? "view-btn active" : "view-btn"}
+            onClick={setListView}
+            title="List view"
+          >
+            <BsList />
+          </button>
+        </div>
 
-      {/* 3rd column - show a drop down menu */} 
-      <div className="sort-selection">
-        <form action="#">
-          <label htmlFor="sort"></label>
-          <select
-            name="sort"
-            id="sort"
-            className="sort-selection--style"
-            onClick={sorting}>
-            <option value="lowest">Price (lowest)</option>
-            <option value="#" disabled></option>            {/*taking a dummy option for space and disabling the option*/}
-            <option value="highest">Price (highest)</option>
-            <option value="#" disabled></option>
-            <option value="a-z">Price (a-z)</option>
-            <option value="#" disabled></option>
-            <option value="z-a">Price (z-a)</option>
-          </select>
-        </form>
+        <select name="sort" id="sort" className="sort-select" onChange={sorting}>
+          <option value="lowest">Price: Low to High</option>
+          <option value="highest">Price: High to Low</option>
+          <option value="a-z">Name: A–Z</option>
+          <option value="z-a">Name: Z–A</option>
+        </select>
       </div>
     </Wrapper>
   );
 };
 
-const Wrapper = styled.section`
+const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 5rem;
+  align-items: center;
+  padding: 1.6rem 2rem;
+  background: #111111;
+  border-radius: 1.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 
-  .sorting-list--grid {
+  .results-count {
     display: flex;
-    gap: 2rem;
+    align-items: baseline;
+    gap: 0.5rem;
 
-    .sort-btn {
-      padding: 0.8rem 1rem;
-      border: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
+    .count {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.04em;
     }
 
-    .icon {
-      font-size: 1.6rem;
-    }
-    .active {
-      background-color: ${({ theme }) => theme.colors.black};
-      color: #fff;
+    .label {
+      font-size: 1.4rem;
+      color: rgba(255, 255, 255, 0.4);
     }
   }
 
-  .sort-selection .sort-selection--style {
-    padding: 0.5rem;
-    cursor: pointer;
+  .sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
 
-    .sort-select--option {
-      padding: 0.5rem 0;
+  .view-toggle {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.8rem;
+    padding: 0.3rem;
+    gap: 0.2rem;
+
+    .view-btn {
+      width: 3.4rem;
+      height: 3.4rem;
+      border: none;
+      background: transparent;
+      border-radius: 0.6rem;
       cursor: pointer;
-      height: 2rem;
-      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: rgba(255, 255, 255, 0.4);
+      transition: all 0.15s;
+
+      &:hover { color: rgba(255, 255, 255, 0.8); }
+
+      &.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+      }
     }
+  }
+
+  .sort-select {
+    padding: 0.9rem 1.4rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    outline: none;
+
+    option {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    &:focus { border-color: #0071e3; }
+  }
+
+  @media (max-width: ${({ theme }) => theme.media.mobile}) {
+    flex-wrap: wrap;
+    gap: 1.2rem;
   }
 `;
 

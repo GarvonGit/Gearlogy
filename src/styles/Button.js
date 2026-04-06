@@ -1,35 +1,74 @@
 import styled from "styled-components";
 
-
-//This is a styled component that keeps style for the button throught the website
-
-
 export const Button = styled.button`
-  text-decoration: none;
-  max-width: auto;
-  background-color: rgb(98 84 243);
-  color: rgb(255 255 255);
-  padding: 1.4rem 2.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem 2.4rem;
+  background-color: ${({ theme }) => theme.colors.btn};
+  color: #ffffff;
   border: none;
-  border-radius: 0.7rem;
-  text-transform: uppercase;
-  text-align: center;
+  border-radius: 3rem;
+  font-size: 1.5rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  -webkit-transition: all 0.3s ease 0s;
-  -moz-transition: all 0.3s ease 0s;
-  -o-transition: all 0.3s ease 0s;
-
-  &:hover,
-  &:active {
-    box-shadow: 0 2rem 2rem 0 rgb(132 144 255 / 30%);
-    box-shadow: ${({ theme }) => theme.colors.shadowSupport};
-    transform: scale(0.96);
-  }
+  letter-spacing: -0.01em;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  text-decoration: none;
 
   a {
+    color: #ffffff;
     text-decoration: none;
-    color: rgb(255 255 255);
-    font-size: 1.8rem;
+  }
+
+  &:hover {
+    background-color: #0077ed;
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &.btn-outline {
+    background-color: transparent;
+    border: 1.5px solid ${({ theme }) => theme.colors.btn};
+    color: ${({ theme }) => theme.colors.btn};
+
+    a {
+      color: ${({ theme }) => theme.colors.btn};
+    }
+
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.btn};
+      color: #ffffff;
+      a {
+        color: #ffffff;
+      }
+    }
+  }
+
+  &.btn-danger {
+    background-color: #ff375f;
+    &:hover {
+      background-color: #e0284f;
+      box-shadow: 0 4px 12px rgba(255, 55, 95, 0.3);
+    }
+  }
+
+  &.btn-ghost {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: ${({ theme }) => theme.colors.heading};
+
+    a {
+      color: ${({ theme }) => theme.colors.heading};
+    }
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.08);
+      box-shadow: none;
+    }
   }
 `;

@@ -2,89 +2,136 @@ import styled from "styled-components";
 import { useCartContext } from "./context/cart_context";
 import CartItem from "./components/CartItem";
 import { NavLink } from "react-router-dom";
-import { Button } from "./styles/Button";
 import FormatPrice from "./Helpers/FormatPrice";
-import { useAuth0 } from "@auth0/auth0-react";
+import { FiShoppingBag, FiTrash2, FiArrowLeft, FiArrowRight, FiTruck, FiShield } from "react-icons/fi";
 
 const Cart = () => {
   const { cart, clearCart, total_price, shipping_fee } = useCartContext();
-  //console.log("🚀 ~ file: Cart.js ~ line 6 ~ Cart ~ cart", cart);
 
-  const{ isAuthenticated, user } = useAuth0();
-  
-  if (cart.length === 0) {        //when your cart is empty return "NO ITEMS IN CART"
+  if (cart.length === 0) {
     return (
-      <EmptyDiv>
-         <h3>Oops! No item in cart </h3>
-        <img className="empty-cart" src="images/empty-cart.png" alt="empty-cart"/>
-        <Button>
-          <NavLink to="/products">continue Shopping</NavLink>
-        </Button>
-      </EmptyDiv>
+      <EmptyWrapper>
+        <div className="empty-content">
+          <div className="empty-icon"><FiShoppingBag /></div>
+          <h2>Your cart is empty</h2>
+          <p>
+            Discover our premium electronics and find something you'll love.
+          </p>
+          <NavLink to="/products">
+            <button className="shop-btn">
+              <FiArrowLeft style={{ marginRight: "0.8rem" }} />
+              Browse Products
+            </button>
+          </NavLink>
+        </div>
+      </EmptyWrapper>
     );
   }
-  
-  
+
+  const itemCount = cart.reduce((acc, item) => acc + item.amount, 0);
+  const orderTotal = shipping_fee + total_price;
+
   return (
     <Wrapper>
-      <div className="container">
-        {isAuthenticated && (
-          <div className="cart-user--profile">
-            <img src={user.profile} alt={user.name}/>
-            <h2 className="cart-user--name">{user.name}</h2>
-          </div>
-        )}
-        <div className="cart_heading grid grid-five-column">
-          <p>Item</p>
-          <p className="cart-hide">Price</p>
-          <p>Quantity</p>
-          <p className="cart-hide">Subtotal</p>
-          <p>Remove</p>
-        </div>
-        <hr />
-
-        <div className="cart-item">
-          {cart.map((curElem) => {
-            return <CartItem key={curElem.id} {...curElem} />;
-          })}
-        </div>
-
-        <hr />
-
-        <div className="cart-three-button">
-          <NavLink to="/products">
-            <Button> continue Shopping </Button>
+      {/* Header */}
+      <div className="cart-header">
+        <div className="cart-header-inner">
+          <h1>Cart <span className="item-count">{itemCount}</span></h1>
+          <NavLink to="/products" className="continue-link">
+            <FiArrowLeft style={{ marginRight: "0.4rem" }} />
+            Continue Shopping
           </NavLink>
-          <Button className="btn btn-checkout">
-            <NavLink to="/checkout">Checkout</NavLink>
-          </Button>
+        </div>
+      </div>
 
-          <Button className="btn btn-clear" onClick={clearCart}>
-            clear cart
-          </Button>
+      {/* Body */}
+      <div className="cart-body">
+        {/* Items */}
+        <div className="cart-items-col">
+          <div className="items-header">
+            <span>Product</span>
+            <span>Price</span>
+            <span>Qty</span>
+            <span>Subtotal</span>
+            <span></span>
+          </div>
+
+          <div className="items-list">
+            {cart.map((item) => (
+              <CartItem key={item.id} {...item} />
+            ))}
+          </div>
+
+          <div className="clear-row">
+            <button className="clear-all-btn" onClick={clearCart}>
+              <FiTrash2 style={{ marginRight: "0.6rem" }} />
+              Clear Cart
+            </button>
+          </div>
         </div>
 
-         {/* order total_amount  */}
-        <div className="order-total--amount">
-          <div className="order-total--subdata">
-            <div>
-              <p>subtotal:</p>
-              <p>
-                <FormatPrice price={total_price} />         {/* display subtotal of all the products in cart */}
-              </p>
+        {/* Summary */}
+        <div className="summary-col">
+          <div className="summary-card">
+            <h3>Order Summary</h3>
+
+            <div className="summary-lines">
+              <div className="line">
+                <span>Subtotal ({itemCount} items)</span>
+                <span><FormatPrice price={total_price} /></span>
+              </div>
+              <div className="line">
+                <span>Shipping</span>
+                <span className="free-tag">
+                  {shipping_fee === 0 ? "Free" : <FormatPrice price={shipping_fee} />}
+                </span>
+              </div>
+              <div className="line">
+                <span>GST &amp; Taxes</span>
+                <span>Included</span>
+              </div>
             </div>
-            <div>
-              <p>shipping fee:</p>
-              <p>
-                <FormatPrice price={shipping_fee} />      {/* display shipping fee of all the products in cart */}
-              </p>
+
+            <div className="divider" />
+
+            <div className="total-line">
+              <span>Total</span>
+              <strong><FormatPrice price={orderTotal} /></strong>
             </div>
-            <hr />
-            <div>
-              <p>order total:</p>
-              <p>
-                <FormatPrice price={shipping_fee + total_price} />          {/* display total price of all the products in cart */}
-              </p>
+
+            <div className="trust-badges">
+              <div className="badge-item">
+                <FiTruck />
+                <span>Free Delivery</span>
+              </div>
+              <div className="badge-item">
+                <FiShield />
+                <span>Secure Checkout</span>
+              </div>
+            </div>
+
+            <NavLink to="/checkout" style={{ display: "block" }}>
+              <button className="checkout-btn">
+                Checkout <FiArrowRight style={{ marginLeft: "0.6rem" }} />
+              </button>
+            </NavLink>
+
+            <div className="payment-methods">
+              <span>Accepted:</span>
+              <div className="methods">
+                {["💳 Visa", "💳 MC", "📱 UPI", "🏦 Bank"].map((m, i) => (
+                  <span key={i} className="method">{m}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Promo */}
+          <div className="promo-card">
+            <h4>Promo Code</h4>
+            <div className="promo-row">
+              <input type="text" placeholder="Enter code..." />
+              <button>Apply</button>
             </div>
           </div>
         </div>
@@ -93,200 +140,355 @@ const Cart = () => {
   );
 };
 
-const EmptyDiv = styled.div`
-  display: grid;
-  place-items: center;
-  height: 50vh;
+const EmptyWrapper = styled.div`
+  background: #000;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  h3 {
-    font-size: 4.2rem;
-    text-transform: capitalize;
-    font-weight: bold;
-    color: ${({ theme }) => theme.colors.btn};
+  .empty-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 4rem 2.4rem;
+    max-width: 48rem;
+  }
+
+  .empty-icon {
+    width: 10rem;
+    height: 10rem;
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.6rem;
+    color: rgba(255,255,255,0.25);
+  }
+
+  h2 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.04em;
+  }
+
+  p {
+    font-size: 1.7rem;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.6;
+  }
+
+  .shop-btn {
+    display: flex;
+    align-items: center;
+    padding: 1.4rem 2.8rem;
+    background: #0071e3;
+    border: none;
+    border-radius: 3rem;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+
+    &:hover {
+      background: #0077ed;
+      transform: scale(1.02);
+      box-shadow: 0 8px 24px rgba(0,113,227,0.4);
+    }
   }
 `;
 
-const Wrapper = styled.section`
-  padding: 9rem 0;
+const Wrapper = styled.div`
+  background: #000;
+  min-height: 100vh;
 
-  .grid-four-column {
-    grid-template-columns: repeat(4, 1fr);
+  .cart-header {
+    background: #0a0a0a;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 4rem 4rem 3rem;
   }
 
-
-  .grid-five-column {
-    grid-template-columns: repeat(4, 1fr) 0.3fr;
-    text-align: center;
-    align-items: center;
-  }
-  .cart-heading {
-    text-align: center;
-    text-transform: uppercase;
-  }
-  hr {
-    margin-top: 1rem;
-    text-align: center;
-    justify-content: center;
-  }
-  .cart-item {
-    padding: 3.2rem 0;
+  .cart-header-inner {
+    max-width: 140rem;
+    margin: 0 auto;
     display: flex;
-    flex-direction: column;
-    gap: 3.2rem;
-  }
-
-  .cart-user--profile {
-    display: flex;
-    justify-content: flex-start;
     align-items: center;
-    gap: 1.2rem;
-    margin-bottom: 5.4rem;
+    justify-content: space-between;
+    gap: 2rem;
 
-    img {
-      width: 8rem;
-      height: 8rem;
-      border-radius: 50%;
-    }
-    h2 {
-      font-size: 2.4rem;
-    }
-  }
-  .cart-user--name {
-    text-transform: capitalize;
-    color: ${({ theme }) => theme.colors.btn};
-  }
-  .cart-image--name {
-    /* background-color: red; */
-    align-items: center;
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: 0.4fr 1fr;
-    text-transform: capitalize;
-    text-align: left;
-    img {
-      max-width: 5rem;
-      height: 5rem;
-      object-fit: contain;
-      color: transparent;
-    }
-
-    .color-div {
+    h1 {
+      font-size: 4.8rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.05em;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      gap: 1rem;
+      gap: 1.2rem;
+    }
 
-      .color-style {
-        width: 1.4rem;
-        height: 1.4rem;
+    .item-count {
+      font-size: 2rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.06);
+      padding: 0.4rem 1.2rem;
+      border-radius: 2rem;
+    }
 
-        border-radius: 50%;
-      }
+    .continue-link {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #0071e3;
+      text-decoration: none;
+      transition: opacity 0.2s;
+
+      &:hover { opacity: 0.7; }
     }
   }
 
-  .cart-three-button {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: space-between;
-
-    .btn-checkout {
-      float: left;
-      margin-right: 65rem;
-    }
-
-    .btn-clear {
-      background-color: #e74c3c;
-    }
+  .cart-body {
+    max-width: 140rem;
+    margin: 0 auto;
+    padding: 4rem;
+    display: grid;
+    grid-template-columns: 1fr 38rem;
+    gap: 3.2rem;
+    align-items: flex-start;
   }
 
-  .amount-toggle {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2.4rem;
-    font-size: 1.4rem;
-
-    button {
-      border: none;
-      background-color: #fff;
-      cursor: pointer;
-    }
-
-    .amount-style {
-      font-size: 2.4rem;
-      color: ${({ theme }) => theme.colors.btn};
-    }
-  }
-
-  .remove_icon {
-    font-size: 1.6rem;
-    color: #e74c3c;
-    cursor: pointer;
-  }
-
-  .order-total--amount {
-    width: 100%;
-    margin: 4.8rem 0;
-    text-transform: capitalize;
+  /* Items Column */
+  .cart-items-col {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-end;
+    gap: 0;
+  }
 
-    .order-total--subdata {
-      border: 0.1rem solid #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      gap: 1.8rem;
-      padding: 3.2rem;
-    }
-    div {
-      display: flex;
-      gap: 3.2rem;
-      justify-content: space-between;
-    }
+  .items-header {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1.5fr 1fr 0.3fr;
+    padding: 0 0 1.4rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgba(255,255,255,0.3);
+  }
 
-    div:last-child {
-      background-color: #fafafa;
-    }
+  .items-list {
+    display: flex;
+    flex-direction: column;
+  }
 
-    div p:last-child {
-      font-weight: bold;
-      color: ${({ theme }) => theme.colors.heading};
+  .clear-row {
+    padding-top: 2.4rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: 0.8rem;
+  }
+
+  .clear-all-btn {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: 1px solid rgba(255, 55, 95, 0.35);
+    color: #ff375f;
+    padding: 0.9rem 1.8rem;
+    border-radius: 3rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover { background: rgba(255,55,95,0.1); border-color: #ff375f; }
+  }
+
+  /* Summary Column */
+  .summary-col {
+    position: sticky;
+    top: 8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  .summary-card {
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 2rem;
+    padding: 2.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+
+    h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.03em;
     }
   }
 
-  @media (max-width: ${({ theme }) => theme.media.mobile}) {
-    .grid-five-column {
-      grid-template-columns: 1.5fr 1fr 0.5fr;
-    }
-    .cart-hide {
-      display: none;
+  .summary-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+
+  .line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.5rem;
+    color: rgba(255,255,255,0.5);
+
+    .free-tag { color: #30d158; font-weight: 600; }
+  }
+
+  .divider { height: 1px; background: rgba(255,255,255,0.07); }
+
+  .total-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    span {
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.7);
     }
 
-    .cart-two-button {
-      margin-top: 2rem;
+    strong {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.04em;
+    }
+  }
+
+  .trust-badges {
+    display: flex;
+    gap: 1rem;
+    font-size: 1.3rem;
+    color: rgba(255,255,255,0.4);
+
+    .badge-item {
       display: flex;
-      justify-content: space-between;
-      gap: 2.2rem;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,255,255,0.04);
+      border-radius: 2rem;
+      padding: 0.6rem 1.2rem;
+      flex: 1;
+      justify-content: center;
+    }
+  }
+
+  .checkout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 1.6rem;
+    background: #0071e3;
+    border: none;
+    border-radius: 3rem;
+    color: #fff;
+    font-size: 1.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: -0.01em;
+
+    &:hover { background: #0077ed; transform: scale(1.01); box-shadow: 0 8px 32px rgba(0,113,227,0.4); }
+  }
+
+  .payment-methods {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.25);
+
+    .methods {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
-    .order-total--amount {
-      width: 100%;
-      text-transform: capitalize;
-      justify-content: flex-start;
-      align-items: flex-start;
+    .method {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 0.3rem 0.8rem;
+      border-radius: 0.6rem;
+    }
+  }
 
-      .order-total--subdata {
-        width: 100%;
-        border: 0.1rem solid #f0f0f0;
-        display: flex;
-        flex-direction: column;
-        gap: 1.8rem;
-        padding: 3.2rem;
+  .promo-card {
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 2rem;
+    padding: 2.4rem;
+
+    h4 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 1.4rem;
+      letter-spacing: -0.01em;
+    }
+
+    .promo-row {
+      display: flex;
+      gap: 0.8rem;
+
+      input {
+        flex: 1;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 1rem;
+        color: #fff;
+        padding: 1rem 1.2rem;
+        font-size: 1.4rem;
+        max-width: unset;
+
+        &::placeholder { color: rgba(255,255,255,0.2); }
+        &:focus { border-color: #0071e3; }
+      }
+
+      button {
+        padding: 1rem 1.8rem;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 1rem;
+        color: rgba(255,255,255,0.8);
+        font-size: 1.4rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s;
+
+        &:hover { background: rgba(255,255,255,0.14); color: #fff; }
       }
     }
+  }
+
+  @media (max-width: ${({ theme }) => theme.media.tab}) {
+    .cart-body { grid-template-columns: 1fr; padding: 2.4rem; }
+    .summary-col { position: static; }
+    .items-header { display: none; }
+    .cart-header { padding: 3rem 2.4rem 2rem; }
+    .cart-header-inner h1 { font-size: 3.2rem; }
   }
 `;
 

@@ -1,3 +1,4 @@
+import React from "react";
 import { useProductContext } from "../context/productcontext";
 import styled from "styled-components";
 import Product from "./Product";
@@ -5,121 +6,124 @@ import Product from "./Product";
 const FeatureProduct = () => {
   const { isLoading, featureProducts } = useProductContext();
 
-  if (isLoading) {      //if you are fetching data from API then set loading to true 
-    return <div>Hang on, we are Loading...</div>;
+  if (isLoading) {
+    return (
+      <LoadingWrapper>
+        <div className="container">
+          <div className="loading-grid">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="skeleton-card">
+                <div className="skeleton-image" />
+                <div className="skeleton-text" />
+                <div className="skeleton-text short" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </LoadingWrapper>
+    );
   }
 
   return (
     <Wrapper className="section">
       <div className="container">
-        <div className="intro-data">Check Now!</div>
-        <div className="common-heading">Top sellers</div>
-        <div className="grid grid-three-column">
-          {featureProducts.map((curElem) => {                       //map the data from the API
-            return <Product key={curElem.id} {...curElem} />;       //pass the data to the product component <Product/>
-          })}
+        <div className="section-header">
+          <p className="intro-data">Our Selection</p>
+          <h2 className="common-heading">Featured Products</h2>
+          <p className="section-subtitle">
+            Handpicked premium electronics for every lifestyle
+          </p>
+        </div>
+        <div className="products-grid">
+          {featureProducts.slice(0, 8).map((curElem) => (
+            <Product key={curElem.id} {...curElem} />
+          ))}
         </div>
       </div>
     </Wrapper>
   );
 };
 
-const Wrapper = styled.section`
-  padding: 9rem 0;
-  background-color: ${({ theme }) => theme.colors.bg};
+const LoadingWrapper = styled.section`
+  padding: 8rem 0;
+  background: #f5f5f7;
 
-  .container {
-    max-width: 120rem;
+  .loading-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 4rem;
   }
 
-  figure {
-    width: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+  .skeleton-card {
+    background: #fff;
+    border-radius: 1.6rem;
     overflow: hidden;
-    transition: all 0.5s linear;
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 0%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      transition: all 0.2s linear;
-      cursor: pointer;
-    }
-    &:hover::after {
-      width: 100%;
-    }
-    &:hover img {
-      transform: scale(1.2);
-    }
-    img {
-      max-width: 90%;
-      margin-top: 1.5rem;
-      height: 20rem;
-      transition: all 0.2s linear;
-    }
+  }
 
-    .caption {
-      position: absolute;
-      top: 15%;
-      right: 10%;
-      text-transform: uppercase;
-      background-color: ${({ theme }) => theme.colors.bg};
-      color: ${({ theme }) => theme.colors.helper};
-      padding: 0.8rem 2rem;
-      font-size: 1.2rem;
-      border-radius: 2rem;
+  .skeleton-image {
+    width: 100%;
+    height: 20rem;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+    background-size: 400% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  .skeleton-text {
+    height: 1.4rem;
+    margin: 1.6rem 1.6rem 0.8rem;
+    border-radius: 0.4rem;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+    background-size: 400% 100%;
+    animation: shimmer 1.5s infinite;
+
+    &.short {
+      width: 50%;
     }
   }
 
-  .card {
-    background-color: #fff;
-    border-radius: 1rem;
+  @keyframes shimmer {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+  }
+`;
 
-    .card-data {
-      padding: 0 2rem;
+const Wrapper = styled.section`
+  padding: 10rem 0;
+  background: #f5f5f7;
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 5.6rem;
+  }
+
+  .section-subtitle {
+    font-size: 1.8rem;
+    color: ${({ theme }) => theme.colors.text};
+    margin-top: 1.2rem;
+    max-width: 50rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+
+  @media (max-width: ${({ theme }) => theme.media.tab}) {
+    .products-grid {
+      grid-template-columns: repeat(2, 1fr);
     }
+  }
 
-    .card-data-flex {
-      margin: 2rem 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+  @media (max-width: ${({ theme }) => theme.media.mobile}) {
+    padding: 6rem 0;
 
-    h3 {
-      color: ${({ theme }) => theme.colors.text};
-      text-transform: capitalize;
-    }
-
-    .card-data--price {
-      color: ${({ theme }) => theme.colors.helper};
-    }
-
-    .btn {
-      margin: 2rem auto;
-      background-color: rgb(0 0 0 / 0%);
-      border: 0.1rem solid rgb(98 84 243);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      &:hover {
-        background-color: rgb(98 84 243);
-      }
-
-      &:hover a {
-        color: #fff;
-      }
-      a {
-        color: rgb(98 84 243);
-        font-size: 1.4rem;
-      }
+    .products-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
     }
   }
 `;

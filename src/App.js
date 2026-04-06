@@ -16,22 +16,27 @@ import Checkout from "./Checkout";
 const App = () => {
   const theme = {
     colors: {
-      heading: "rgb(24 24 29)",
-      text: "rgba(29 ,29, 29, .8)",
-      white: "#fff",
-      black: " #212529",
-      helper: "#8490ff",
+      heading: "#1d1d1f",
+      text: "#6e6e73",
+      white: "#ffffff",
+      black: "#1d1d1f",
+      helper: "#0071e3",
 
-      bg: "#F6F8FA",
-      footer_bg: "#0a1435",
-      btn: "rgb(98 84 243)",
-      border: "rgba(98, 84, 243, 0.5)",
-      hr: "#ffffff",
-      gradient:
-        "linear-gradient(0deg, rgb(132 144 255) 0%, rgb(98 189 252) 100%)",
-      shadow:
-        "rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;",
-      shadowSupport: " rgba(0, 0, 0, 0.16) 0px 1px 4px",
+      bg: "#f5f5f7",
+      pageBg: "#ffffff",
+      footer_bg: "#1d1d1f",
+      btn: "#0071e3",
+      btnHover: "#0077ed",
+      border: "rgba(0, 0, 0, 0.1)",
+      hr: "#d2d2d7",
+      gradient: "linear-gradient(135deg, #0071e3 0%, #42a5f5 100%)",
+      shadow: "0 2px 12px rgba(0,0,0,0.08)",
+      shadowSupport: "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)",
+      shadowCard: "0 4px 24px rgba(0,0,0,0.08)",
+      accent: "#0071e3",
+      success: "#30d158",
+      warning: "#ff9f0a",
+      danger: "#ff375f",
     },
     media: {
       mobile: "768px",
