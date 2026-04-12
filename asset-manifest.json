@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Gearlogy/static/css/main.451efaa5.css",
+    "main.js": "/Gearlogy/static/js/main.ab11f76a.js",
+    "static/js/787.5c65c091.chunk.js": "/Gearlogy/static/js/787.5c65c091.chunk.js",
+    "index.html": "/Gearlogy/index.html",
+    "main.451efaa5.css.map": "/Gearlogy/static/css/main.451efaa5.css.map",
+    "main.ab11f76a.js.map": "/Gearlogy/static/js/main.ab11f76a.js.map",
+    "787.5c65c091.chunk.js.map": "/Gearlogy/static/js/787.5c65c091.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.451efaa5.css",
+    "static/js/main.ab11f76a.js"
+  ]
+}
